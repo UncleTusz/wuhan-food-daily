@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#EA580C">
+<title>武汉美食日报 · 2026-09-06</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{
+  --bg:#FFF7ED; --fg:#0F172A; --card:#FFFFFF; --muted:#FDF4F0; --muted-fg:#57534E;
+  --border:#FCEAE1; --primary:#EA580C; --accent:#2563EB; --ring:#EA580C;
+  --shadow:0 1px 3px rgba(15,23,42,.06),0 4px 14px rgba(234,88,12,.08);
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--ring);outline-offset:2px;border-radius:6px}
+img{display:block}
+
+/* ---------- hero：顶部 1/3 视口 ---------- */
+.hero{position:relative;height:33vh;min-height:230px;max-height:400px;overflow:hidden}
+.hero img{width:100%;height:100%;object-fit:cover;object-position:center 42%}
+.hero .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,23,42,.02) 35%,rgba(15,23,42,.6) 100%)}
+.hero .inner{position:absolute;left:0;right:0;bottom:0;padding:14px 18px 16px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hero h1{color:#fff;font-size:clamp(19px,4.5vw,24px);font-weight:700;letter-spacing:.5px;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+.hero .sub{color:rgba(255,255,255,.9);font-size:clamp(11px,2.8vw,12.5px);margin-top:3px;text-shadow:0 1px 6px rgba(0,0,0,.45)}
+.stats{display:flex;gap:7px;flex-wrap:wrap}
+.stat{background:rgba(255,255,255,.93);backdrop-filter:blur(4px);border-radius:999px;padding:4px 11px;font-size:11.5px;font-weight:700;color:#7C2D12;display:flex;align-items:center;gap:5px}
+.stat svg{width:12px;height:12px;stroke:var(--primary)}
+.hero .tag-ai{position:absolute;top:10px;right:12px;background:rgba(15,23,42,.5);color:#fff;font-size:10.5px;padding:3px 9px;border-radius:999px;backdrop-filter:blur(3px)}
+
+/* ---------- sticky 筛选条 ---------- */
+.toolbar{position:sticky;top:0;z-index:500;background:rgba(255,247,237,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;flex:1}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;border:1px solid var(--border);background:var(--card);color:var(--muted-fg);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s ease;display:flex;align-items:center;gap:6px;min-height:36px}
+.chip svg{width:14px;height:14px}
+.chip:hover{border-color:var(--primary);color:var(--primary)}
+.chip.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.origin-tip{flex-shrink:0;font-size:11.5px;color:var(--muted-fg)}
+.origin-tip b{color:var(--accent)}
+@media (max-width:640px){.origin-tip{display:none}}
+
+/* ---------- 卡片流 ---------- */
+.feed{padding:18px 18px 6px;max-width:1200px;margin:0 auto}
+.feed-sec{font-size:15px;font-weight:700;margin:6px 0 14px;display:flex;align-items:center;gap:7px}
+.feed-sec svg{width:16px;height:16px;stroke:var(--primary)}
+.masonry{column-count:1;column-gap:16px}
+@media (min-width:680px){.masonry{column-count:2}}
+@media (min-width:1080px){.masonry{column-count:3}}
+.card{break-inside:avoid;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;box-shadow:var(--shadow);animation:fadeUp .45s ease both}
+.card:hover{transform:translateY(-3px);box-shadow:0 6px 24px rgba(234,88,12,.16);border-color:#FDBA8C}
+.card.hl{border-color:var(--primary);box-shadow:0 0 0 2px rgba(234,88,12,.35),0 6px 24px rgba(234,88,12,.16)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.card{animation:none}.card:hover{transform:none}}
+
+.cover{position:relative;aspect-ratio:4/3;background:var(--muted);overflow:hidden}
+.cover img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+.card:hover .cover img{transform:scale(1.04)}
+.cover .flag{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.94);color:#9A3412;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;display:flex;align-items:center;gap:5px;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.cover .flag svg{width:12px;height:12px}
+.cover .km-f{position:absolute;bottom:10px;right:10px;background:rgba(15,23,42,.62);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;backdrop-filter:blur(3px);transition:background .2s}
+.cover .km-f.warn{background:rgba(180,83,9,.92);animation:shake .45s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.cover .gal{position:absolute;bottom:10px;left:10px;background:rgba(37,99,235,.9);color:#fff;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;backdrop-filter:blur(3px)}
+
+.body{padding:13px 15px 12px}
+.title{font-size:15.5px;font-weight:700;line-height:1.45;margin-bottom:7px}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px}
+.mtag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--muted);color:var(--muted-fg)}
+.mtag.cat{color:#9A3412;background:#FEF0E6}
+.mtag.stat{color:#166534;background:#ECFDF3}
+.sum{font-size:12.5px;color:var(--muted-fg);line-height:1.75;margin-bottom:9px}
+.kv{font-size:12px;line-height:1.85;margin-bottom:8px}
+.kv .k{font-weight:700;color:#15803D}
+.kv .k.bad{color:#B91C1C}
+.kv li{list-style:none;padding-left:15px;position:relative}
+.kv li:before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:#15803D}
+.kv.bad li:before{background:#DC2626}
+.links{display:flex;gap:8px;flex-wrap:wrap;border-top:1px dashed var(--border);padding-top:10px;align-items:center;justify-content:space-between}
+.mine{font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px}
+.mine.low{background:#ECFDF3;color:#15803D}
+.mine.mid{background:#FEF6E0;color:#B45309}
+.mine.high{background:#FEF0EF;color:#B91C1C}
+.mine.tbd{background:#F1F5F9;color:#64748B}
+.lnk{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:6px 11px;border-radius:9px;border:1px solid var(--border);color:var(--muted-fg);text-decoration:none;transition:all .18s;cursor:pointer}
+.lnk:hover{color:var(--primary);border-color:var(--primary)}
+.lnk.dp:hover{color:#C41010;border-color:#C41010}
+.lnk svg{width:13px;height:13px;stroke:currentColor}
+.grp{display:flex;gap:8px}
+
+/* ---------- 底部交互地图 ---------- */
+.mapsec{max-width:1200px;margin:8px auto 0;padding:0 18px 40px}
+.map-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.map-title{padding:13px 16px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:7px}
+.map-title svg{width:15px;height:15px;stroke:var(--primary)}
+#map{height:56vh;min-height:360px}
+.map-note{padding:10px 14px;font-size:11.5px;color:var(--muted-fg);border-top:1px solid var(--border);line-height:1.7;display:flex;gap:7px}
+.map-note svg{width:14px;height:14px;stroke:var(--accent);flex-shrink:0;margin-top:1px}
+
+footer{padding:0 18px 34px;max-width:1200px;margin:0 auto;font-size:11px;color:#78716C;line-height:1.9}
+footer a{color:var(--primary);text-decoration:none}
+
+/* ---------- leaflet ---------- */
+.pin{background:none;border:none}
+.pin .inner{width:30px;height:30px;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(15,23,42,.3);border:2px solid #fff}
+.pin .inner svg{width:14px;height:14px;stroke:#fff;transform:rotate(45deg)}
+.pin.origin .inner{border-radius:50%;background:var(--accent)}
+.pin.origin .inner svg{width:12px;height:12px}
+.leaflet-popup-content-wrapper{border-radius:12px}
+.leaflet-popup-content{margin:12px 14px;font-family:inherit}
+.pop{font-size:12px;line-height:1.7;min-width:200px}
+.pop b{font-size:13.5px;display:block;margin-bottom:4px}
+.pop .row{color:#57534E;margin-bottom:2px}
+.pop .d{color:var(--accent);font-weight:700}
+.pop a{color:var(--primary);font-weight:600;text-decoration:none}
+</style>
+</head>
+<body>
+
+<!-- ① 顶部 1/3：AI 手绘美食地图底图 -->
+<header class="hero">
+  <img src="assets/hero_map.jpg" alt="武汉手绘美食地图（AI 插画示意）">
+  <div class="veil"></div>
+  <span class="tag-ai">AI 手绘示意底图</span>
+  <div class="inner">
+    <div>
+      <h1>武汉美食日报</h1>
+      <div class="sub">2026-09-06 ｜ 🌸 今日主题：综合精选 ｜ 小红书一手笔记 · 每天 08:30 自动更新</div>
+    </div>
+    <div class="stats">
+      <span class="stat"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>5 篇精选</span>
+      <span class="stat"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-5 3 3 5-7"/></svg>10 篇候选</span>
+      <span class="stat"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>4 处踩雷</span>
+    </div>
+  </div>
+</header>
+
+<!-- ② 筛选条 -->
+<div class="toolbar">
+  <div class="chips" id="chips" role="tablist" aria-label="按品类筛选"></div>
+  <div class="origin-tip">出发地：<b>江汉路（示例）</b></div>
+</div>
+
+<!-- ③ 图文卡片流 -->
+<main class="feed">
+  <div class="feed-sec"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>今天值得看的 5 篇</div>
+  <div class="masonry" id="cards"></div>
+</main>
+
+<!-- ④ 底部：落点与距离 -->
+<section class="mapsec">
+  <div class="map-card">
+    <div class="map-title"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>落点与距离 · 高德坐标</div>
+    <div id="map"></div>
+    <div class="map-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <span>坐标来自<b>高德地图 POI 检索</b>：原文写了明确店名的落<b>店铺级</b>（如半川石），只写位置没写店名/未被高德收录的落<b>商圈级</b>；距离为自示例出发地<b>江汉路</b>的直线距离。部分笔记未写地址，卡片标注"坐标待核实"。</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  数据来源：小红书公开笔记（标题与封面均为原文原图，未做改写）。踩雷判断来自原作者评价，非平台打分。<br>
+  日报由本地脚本每日 08:30 自动采集、筛选、生成；笔记版权归原作者所有，点击卡片按钮可跳转原文。
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* ---------- 品类 ---------- */
+const CATS={
+  hb:  {n:"湖北菜·小吃",c:"#DC2626",icon:"M3 11h18l-9-8-9 8Zm2 2v6h4v-4h4v4h4v-6"},
+  jp:  {n:"日料",      c:"#2563EB",icon:"M3 12h18M12 3v18M6 7c3 0 3 10 6 10s3-10 6-10"},
+  kr:  {n:"韩餐",      c:"#7C3AED",icon:"M4 17h16M6 17a6 6 0 0 1 12 0M12 3v4M8 21h8"},
+  hole:{n:"苍蝇馆子",  c:"#B45309",icon:"M4 20h16M6 20V9l6-5 6 5v11M10 20v-6h4v6"},
+  vibe:{n:"氛围感",    c:"#DB2777",icon:"M12 3v4M12 17v4M3 12h4M17 12h4M6.3 6.3l2.8 2.8M14.9 14.9l2.8 2.8M17.7 6.3l-2.8 2.8M9.1 14.9l-2.8 2.8"},
+  list:{n:"图集合集",  c:"#16A34A",icon:"M4 6h7v7H4zM13 6h7v7h-7zM4 15h7v3H4zM13 15h7v3h-7z"}
+};
+const ORIGIN={n:"江汉路（示例出发地）",lat:30.5802,lng:114.2862};
+const DP=(q)=>"https://www.dianping.com/search/keyword/16/0_"+encodeURIComponent(q);
+
+/* ---------- 数据：5 篇入选笔记（由 build_page.py 自动注入，勿手改） ---------- */
+const NOTES=[
+ {
+  "cat": "hole",
+  "title": "喜报！武汉最正宗的云南菜已被我们发现",
+  "date": "2026-07-28",
+  "likes": 415,
+  "collects": 535,
+  "comments": 120,
+  "imgs": 4,
+  "gallery": false,
+  "cover": "assets/covers/2026-09-06_42f3153e40_s.jpg",
+  "url": "https://www.xiaohongshu.com/explore/6a6871ea00000000010307c5?xsec_token=ABrqyyLMivFfZWZHupoWosrvbmwltqK_4SpPnE92jkL0Q=&xsec_source=pc_search&source=web_explore_feed",
+  "dp": "待核实",
+  "sum": "点评上刷到的云南小馆，店面很小藏在巷子里，老板是地道云南人；酸汤猪脚、小锅饵丝、炸洋芋、炸五花，味道与云南本地十分接近，非预制现做。店小上菜慢、出品不稳定，去前建议先跟老板确认有没有想吃的菜。店名原文未写，坐标待核实。",
+  "must": [
+   "酸汤猪脚",
+   "小锅饵丝",
+   "炸洋芋",
+   "炸五花"
+  ],
+  "trap": [
+   "上菜慢（非预制现做）",
+   "出品不稳定"
+  ],
+  "mine": [
+   "mid",
+   "4图 · 535收藏 · 巷子云南小馆"
+  ],
+  "spots": [],
+  "rating": "",
+  "cost": ""
+ },
+ {
+  "cat": "hole",
+  "title": "感谢谢霆锋🙏确实是武汉极品。。、。。",
+  "date": "2026-08-11",
+  "likes": 523,
+  "collects": 341,
+  "comments": 51,
+  "imgs": 6,
+  "gallery": false,
+  "cover": "assets/covers/2026-09-06_6ae526f8a9_s.jpg",
+  "url": "https://www.xiaohongshu.com/explore/6a7b374700000000060076dd?xsec_token=ABDOSCKunFIb8yeIk37dpF__X-5SSvwgSAwuwzQoCe0ns=&xsec_source=pc_search&source=web_explore_feed",
+  "dp": "待核实",
+  "sum": "烧烤店安利帖：慕名而来真没失望，'香晕我了、恨不得天天吃'，标题致谢谢霆锋（疑与名人相关）。店名与位置原文均未写，需点原文看图核实。",
+  "must": [],
+  "trap": [],
+  "mine": [
+   "mid",
+   "6图 · 523赞 · 名人同款烧烤"
+  ],
+  "spots": [],
+  "rating": "",
+  "cost": ""
+ },
+ {
+  "cat": "hole",
+  "title": "江汉路一些真正好吃的小破店(非网红",
+  "date": "2026-07-10",
+  "likes": 282,
+  "collects": 231,
+  "comments": 10,
+  "imgs": 8,
+  "gallery": false,
+  "cover": "assets/covers/2026-09-06_5f4c10dbd4_s.jpg",
+  "url": "https://www.xiaohongshu.com/explore/6a50bf9e0000000007021a9f?xsec_token=ABEvdAHEMhNJnCC38U6lRwvklwTVm0Dfhz7T89fJbXAkQ=&xsec_source=pc_search&source=web_explore_feed",
+  "dp": "待核实",
+  "sum": "江汉路巷子里的冒菜小破店，作者已三刷，'真的和其他店不一样'：锅底现炒、红油很香，走穷鬼小店路线。店名原文未写（在图里），需点原文看图。",
+  "must": [
+   "现炒锅底冒菜"
+  ],
+  "trap": [],
+  "mine": [
+   "mid",
+   "8图 · 282赞 · 三刷穷鬼冒菜"
+  ],
+  "spots": [
+   {
+    "n": "江汉路（商圈级）",
+    "lat": 30.584249,
+    "lng": 114.287096,
+    "dp": "江汉路",
+    "tip": "江汉区热点地名；店名原文未写，坐标落江汉路商圈（商圈级参考）"
+   }
+  ],
+  "rating": "",
+  "cost": ""
+ },
+ {
+  "cat": "hole",
+  "title": "菜量堪比东北菜的川菜，巨便宜，肉松茄子绝了",
+  "date": "2026-08-25",
+  "likes": 97,
+  "collects": 100,
+  "comments": 30,
+  "imgs": 7,
+  "gallery": false,
+  "cover": "assets/covers/2026-09-06_ddddd62891_s.jpg",
+  "url": "https://www.xiaohongshu.com/explore/6a8ba85800000000160233ea?xsec_token=AB8b1rZkQmPU0eXm-Hukf12HCGQFp9DKF3lDzvVg8W8SQ=&xsec_source=pc_search&source=web_explore_feed",
+  "dp": "999重庆家常菜(同鑫花园店)",
+  "sum": "后湖刁角川菜，菜量堪比东北菜——四个饕餮五道菜没光盘，单价便宜性价比高；肉松茄子拔丝做法外脆里软是招牌，水煮肉片38元肉多又嫩。原文'人均就50+'，高德 4.7 分 / 人均 ¥55。",
+  "must": [
+   "肉松茄子(28元)",
+   "水煮肉片(38元)",
+   "剁椒牛蛙(58元)"
+  ],
+  "trap": [
+   "凉拌鸡丝偏咸",
+   "清炒苕尖原料一般"
+  ],
+  "mine": [
+   "mid",
+   "7图 · 100收藏 · 刁角大菜量川菜"
+  ],
+  "spots": [
+   {
+    "n": "999重庆家常菜(同鑫花园店)",
+    "lat": 30.645691,
+    "lng": 114.298437,
+    "dp": "999重庆家常菜",
+    "tip": "江岸区后湖大道156号同鑫花园景福苑；高德评分 4.7 / 人均 ¥55"
+   }
+  ],
+  "rating": "4.7",
+  "cost": "55"
+ },
+ {
+  "cat": "list",
+  "title": "湖北不是只有热干面！这10样认证",
+  "date": "2026-08-01",
+  "likes": 122,
+  "collects": 64,
+  "comments": 8,
+  "imgs": 4,
+  "gallery": false,
+  "cover": "assets/covers/6a6d693700_s.jpg",
+  "url": "https://www.xiaohongshu.com/explore/6a6d69370000000006004c7f?xsec_token=ABDagzjB5CeejIBLn4lgTSY9xWNp6lNfoNrFaQXAKYWTQ=&xsec_source=pc_search&source=web_explore_feed",
+  "dp": "待核实",
+  "sum": "湖北非遗美食TOP10清单（全省视角，非武汉单店）：清蒸武昌鱼（楚菜头牌）、洪湖排骨藕汤、热干面、黄州东坡肉、潜江油焖小龙虾、襄阳牛肉面等，全是非遗+官方认证。适合来湖北旅行的打卡参考，未涉及具体武汉门店，需点原文看图。",
+  "must": [
+   "清蒸武昌鱼",
+   "排骨藕汤",
+   "热干面",
+   "潜江油焖小龙虾"
+  ],
+  "trap": [],
+  "mine": [
+   "mid",
+   "4图 · 64收藏 · 非遗TOP10清单"
+  ],
+  "spots": [],
+  "rating": "",
+  "cost": ""
+ }
+];
+
+/* ---------- 工具 ---------- */
+const ICON=(d)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
+const DPI=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>`;
+const HEART=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>`;
+const CMT=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z"/></svg>`;
+const IMGI=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
+function hav(a,b,c,d){const R=6371,r=x=>x*Math.PI/180,dl=r(c-a),dg=r(d-b),h=Math.sin(dl/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(dg/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+NOTES.forEach(n=>n.spots.forEach(s=>s.km=hav(ORIGIN.lat,ORIGIN.lng,s.lat,s.lng)));
+NOTES.forEach(n=>n.km=n.spots.length?Math.min(...n.spots.map(s=>s.km)):null);
+
+/* ---------- 底部地图 ---------- */
+const map=L.map('map',{zoomControl:true,attributionControl:false}).setView([30.57,114.30],12);
+L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',{subdomains:['1','2','3','4']}).addTo(map);
+L.control.attribution({prefix:false}).addAttribution('© 高德地图 · 坐标来自高德 POI 检索').addTo(map);
+function mkIcon(cat,origin){
+  const col=origin?'#2563EB':CATS[cat].c;
+  return L.divIcon({className:'pin',html:`<div class="inner" style="background:${col}">${origin?ICON("M3 11h18l-9-8-9 8Zm2 2v6h4v-4h4v4h4v-6"):ICON(CATS[cat].icon)}</div>`,iconSize:[30,30],iconAnchor:[15,28],popupAnchor:[0,-26]});
+}
+const markers=[];
+L.marker([ORIGIN.lat,ORIGIN.lng],{icon:mkIcon(null,true)}).addTo(map).bindPopup(`<div class="pop"><b>${ORIGIN.n}</b><div class="row">正式版将替换为你的固定出发地，并显示真实路线</div></div>`);
+NOTES.forEach(n=>n.spots.forEach(sp=>{
+  const m=L.marker([sp.lat,sp.lng],{icon:mkIcon(n.cat)}).addTo(map);
+  m.bindPopup(`<div class="pop"><b>${sp.n}</b><div class="row">${sp.tip}</div><div class="row" style="color:#78716C">来自笔记：${n.title.slice(0,18)}</div><div class="d">距出发地 ≈ ${sp.km.toFixed(1)} km（直线）</div><a href="${DP(sp.dp)}" target="_blank" rel="noopener">大众点评搜索</a></div>`);
+  markers.push({note:n,marker:m,lat:sp.lat,lng:sp.lng});
+}));
+
+/* ---------- 筛选条 ---------- */
+const chipDefs=[{k:"all",n:"全部",icon:"M3 12h7V3H3v18Zm11 9h7v-9h-7v9Zm0-13h7V3h-7v5Z"}];
+Object.keys(CATS).forEach(k=>{if(NOTES.some(n=>n.cat===k))chipDefs.push({k,...CATS[k]})});
+let cur="all";
+const chipBox=document.getElementById('chips');
+chipDefs.forEach(c=>{
+  const b=document.createElement('button');
+  b.className='chip'+(c.k==="all"?" on":"");b.setAttribute('role','tab');b.innerHTML=ICON(c.icon)+c.n;
+  b.onclick=()=>{cur=c.k;[...chipBox.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');render()};
+  chipBox.appendChild(b);
+});
+
+/* ---------- 卡片流 ---------- */
+const cardBox=document.getElementById('cards');
+function render(){
+  cardBox.innerHTML="";
+  const list=NOTES.filter(n=>cur==="all"||n.cat===cur);
+  if(!list.length){cardBox.innerHTML='<div style="padding:40px 0;text-align:center;color:var(--muted-fg)">该品类暂无收录</div>';return}
+  list.forEach((n,i)=>{
+    const c=CATS[n.cat];
+    const el=document.createElement('article');
+    el.className='card';el.tabIndex=0;el.style.animationDelay=(i*55)+'ms';
+    el.setAttribute('aria-label',n.title);
+    const must=n.must.length?`<div class="kv"><span class="k">必点 / 亮点</span><ul>${n.must.map(x=>`<li>${x}</li>`).join("")}</ul></div>`:"";
+    const trap=n.trap.length?`<div class="kv bad"><span class="k bad">踩雷 / 不值</span><ul>${n.trap.map(x=>`<li>${x}</li>`).join("")}</ul></div>`:"";
+    el.innerHTML=`
+      <div class="cover">
+        <img src="${n.cover}" alt="${n.title.replace(/"/g,'')}（封面为小红书笔记首图）" loading="lazy">
+        <span class="flag">${c.n}</span>
+        ${n.gallery?'<span class="gal">图集：店名在图里</span>':''}
+        ${n.km!==null?`<span class="km-f">≈${n.km.toFixed(1)} km</span>`:'<span class="km-f">坐标待核实</span>'}
+      </div>
+      <div class="body">
+        <div class="title">${n.title}</div>
+        <div class="meta">
+          <span class="mtag cat">${n.date}</span>
+          <span class="mtag stat">${HEART} ${n.collects.toLocaleString()}</span>
+          <span class="mtag stat">${CMT} ${n.comments}</span>
+          <span class="mtag">${IMGI} ${n.imgs} 图</span>
+        </div>
+        <div class="sum">${n.sum}</div>
+        ${must}${trap}
+        <div class="links">
+          <span class="mine ${n.mine[0]}">${n.mine[1]}</span>
+          <span class="grp">
+            ${(n.rating||n.cost)?`<span class='rating' style='display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:700;color:#7C2D12;background:#FEF3C7;border:1px solid #FDE68A;border-radius:999px;padding:4px 11px;margin-right:6px;'>${n.rating?'⭐'+n.rating:''}${(n.rating&&n.cost)?' · ':''}${n.cost?'💰¥'+n.cost+'/人':''}</span>`:''}
+            <a class="lnk" href="${n.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${DPI}小红书原文</a>
+          </span>
+        </div>
+      </div>`;
+    const focus=()=>{
+      document.querySelectorAll('.card.hl').forEach(x=>x.classList.remove('hl'));el.classList.add('hl');
+      if(!n.spots.length){
+        const b=el.querySelector('.km-f');           // 没有落点，给个明确反馈而不是毫无反应
+        b.textContent='原文没写地址，坐标待核实';b.classList.add('warn');
+        setTimeout(()=>{b.textContent='坐标待核实';b.classList.remove('warn')},2000);
+        return;
+      }
+      document.querySelector('.mapsec').scrollIntoView({behavior:'smooth'});
+      setTimeout(()=>{map.flyTo([n.spots[0].lat,n.spots[0].lng],14,{duration:.6});
+        const t=markers.find(m=>m.note===n);if(t)t.marker.openPopup()},350);
+    };
+    el.onclick=focus;
+    el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();focus()}};
+    cardBox.appendChild(el);
+  });
+}
+render();
+</script>
+</body>
+</html>

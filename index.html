@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#EA580C">
+<title>武汉美食日报 · 往期归档</title>
+<style>:root{--bg:#FFF7ED;--fg:#0F172A;--card:#fff;--muted-fg:#57534E;--border:#FCEAE1;--primary:#EA580C;--shadow:0 1px 3px rgba(15,23,42,.06),0 4px 14px rgba(234,88,12,.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.hero{position:relative;height:30vh;min-height:200px;max-height:320px;overflow:hidden}
+.hero img{width:100%;height:100%;object-fit:cover}
+.hero .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,23,42,.05) 30%,rgba(15,23,42,.62) 100%)}
+.hero .inner{position:absolute;left:0;right:0;bottom:0;padding:14px 18px 16px}
+.hero h1{color:#fff;font-size:clamp(19px,4.5vw,25px);font-weight:700;letter-spacing:.5px;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+.hero .sub{color:rgba(255,255,255,.92);font-size:12.5px;margin-top:4px;text-shadow:0 1px 6px rgba(0,0,0,.45)}
+.hero .sub b{color:#FDBA74}
+.hero .stat{position:absolute;top:12px;right:14px;background:rgba(255,255,255,.93);border-radius:999px;padding:4px 11px;font-size:11px;font-weight:700;color:#7C2D12}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 40px}
+.day{display:block;background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px;margin-bottom:14px;transition:transform .15s ease,box-shadow .15s ease}
+.day:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(15,23,42,.08),0 8px 22px rgba(234,88,12,.14)}
+.day-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.d-date{font-size:18px;font-weight:800;color:#7C2D12}
+.d-week{font-size:12px;color:var(--muted-fg);background:var(--bg);border-radius:999px;padding:2px 9px}
+.d-topic{font-size:12px;font-weight:700;color:#7C2D12;background:#FDE8D7;border-radius:999px;padding:2px 9px}
+.d-stats{margin-left:auto;font-size:12px;color:var(--muted-fg)}
+.d-stats b{color:var(--primary);font-size:14px}
+.trap-c{color:#B91C1C;font-style:normal;font-weight:700}
+.day-top{margin-top:10px;display:flex;flex-direction:column;gap:5px}
+.day-top .t{font-size:13.5px;font-weight:600;display:flex;gap:6px;align-items:baseline}
+.day-top .t .no{color:var(--primary);font-weight:800;font-size:12px;flex-shrink:0}
+.day-top .t .warn{color:#B91C1C;font-size:11px;font-weight:800;flex-shrink:0}
+.day-top .t .s{color:var(--muted-fg);font-weight:400;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.day-covers{display:flex;gap:8px;margin-top:11px}
+.day-covers img{width:86px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--border);background:#FDF4F0}
+.d-go{display:inline-block;margin-top:11px;font-size:12.5px;font-weight:700;color:var(--primary)}
+footer{text-align:center;color:var(--muted-fg);font-size:11.5px;padding:6px 0 26px}</style>
+</head>
+<body>
+<div class="hero"><img src="assets/hero_map.jpg" alt="">
+<div class="veil"></div>
+<div class="inner">
+  <div><h1>武汉美食日报 · 往期归档</h1>
+  <div class="sub">每天从小红书精选武汉本地美食一手笔记 ｜ 已存档 <b id="ndays">0</b> 期 · 永久可回翻</div></div>
+  <div class="stats"><span class="stat">📕 每期含地图页 · 高德坐标 · 踩雷标注</span></div>
+</div></div>
+<div class="wrap">
+<!-- ---------- 期数卡片骨架（由 build_archive.py 自动生成，勿手改） ---------- -->
+<a class="day" id="d2026-09-09">
+  <div class="day-head"><span class="d-date">2026 / 09 / 09</span><span class="d-week">周三</span><span class="d-topic">🧋 好喝的饮品</span>
+    <span class="d-stats"><b>5</b> 精选 · 10 候选 · <i class="trap-c">5 踩雷</i></span></div>
+  <div class="day-top"></div>
+  <div class="day-covers"></div>
+  <span class="d-go">打开当期地图页 →</span>
+</a>
+<a class="day" id="d2026-09-08">
+  <div class="day-head"><span class="d-date">2026 / 09 / 08</span><span class="d-week">周二</span><span class="d-topic">🍽️ 餐厅探店</span>
+    <span class="d-stats"><b>5</b> 精选 · 10 候选 · <i class="trap-c">4 踩雷</i></span></div>
+  <div class="day-top"></div>
+  <div class="day-covers"></div>
+  <span class="d-go">打开当期地图页 →</span>
+</a>
+<a class="day" id="d2026-09-07">
+  <div class="day-head"><span class="d-date">2026 / 09 / 07</span><span class="d-week">周一</span><span class="d-topic">🍲 家常馆子</span>
+    <span class="d-stats"><b>5</b> 精选 · 10 候选 · <i class="trap-c">1 踩雷</i></span></div>
+  <div class="day-top"></div>
+  <div class="day-covers"></div>
+  <span class="d-go">打开当期地图页 →</span>
+</a>
+<a class="day" id="d2026-09-06">
+  <div class="day-head"><span class="d-date">2026 / 09 / 06</span><span class="d-week">周日</span><span class="d-topic">🌸 综合精选</span>
+    <span class="d-stats"><b>5</b> 精选 · 10 候选 · <i class="trap-c">4 踩雷</i></span></div>
+  <div class="day-top"></div>
+  <div class="day-covers"></div>
+  <span class="d-go">打开当期地图页 →</span>
+</a>
+<a class="day" id="d2026-09-05">
+  <div class="day-head"><span class="d-date">2026 / 09 / 05</span><span class="d-week">周六</span><span class="d-topic">🍢 街头小吃</span>
+    <span class="d-stats"><b>5</b> 精选 · 10 候选 · <i class="trap-c">3 踩雷</i></span></div>
+  <div class="day-top"></div>
+  <div class="day-covers"></div>
+  <span class="d-go">打开当期地图页 →</span>
+</a>
+<a class="day" id="d2026-09-04">
+  <div class="day-head"><span class="d-date">2026 / 09 / 04</span><span class="d-week">周五</span><span class="d-topic">🆕 新店开业</span>
+    <span class="d-stats"><b>5</b> 精选 · 10 候选 · <i class="trap-c">1 踩雷</i></span></div>
+  <div class="day-top"></div>
+  <div class="day-covers"></div>
+  <span class="d-go">打开当期地图页 →</span>
+</a>
+<a class="day" id="d2026-09-03">
+  <div class="day-head"><span class="d-date">2026 / 09 / 03</span><span class="d-week">周四</span><span class="d-topic"></span>
+    <span class="d-stats"><b>5</b> 精选 · 10 候选 · <i class="trap-c">4 踩雷</i></span></div>
+  <div class="day-top"></div>
+  <div class="day-covers"></div>
+  <span class="d-go">打开当期地图页 →</span>
+</a>
+<a class="day" id="d2026-09-02">
+  <div class="day-head"><span class="d-date">2026 / 09 / 02</span><span class="d-week">周三</span><span class="d-topic"></span>
+    <span class="d-stats"><b>5</b> 精选 · 10 候选 · <i class="trap-c">7 踩雷</i></span></div>
+  <div class="day-top"></div>
+  <div class="day-covers"></div>
+  <span class="d-go">打开当期地图页 →</span>
+</a>
+<a class="day" id="d2026-09-01">
+  <div class="day-head"><span class="d-date">2026 / 09 / 01</span><span class="d-week">周二</span><span class="d-topic"></span>
+    <span class="d-stats"><b>5</b> 精选 · 10 候选 · <i class="trap-c">1 踩雷</i></span></div>
+  <div class="day-top"></div>
+  <div class="day-covers"></div>
+  <span class="d-go">打开当期地图页 →</span>
+</a>
+<a class="day" id="d2026-08-31">
+  <div class="day-head"><span class="d-date">2026 / 08 / 31</span><span class="d-week">周一</span><span class="d-topic"></span>
+    <span class="d-stats"><b>5</b> 精选 · 10 候选 · <i class="trap-c">1 踩雷</i></span></div>
+  <div class="day-top"></div>
+  <div class="day-covers"></div>
+  <span class="d-go">打开当期地图页 →</span>
+</a>
+</div>
+<footer>武汉美食日报 · 数据来源：小红书公开笔记 ｜ AI 整理生成 · 仅供参考</footer>
+<script>
+/* ---------- 数据：各期汇总（由 build_archive.py 自动注入，勿手改） ---------- */
+const ARCHIVE=[
+ {
+  "day": "2026-09-09",
+  "week": "周三",
+  "topic": "🧋 好喝的饮品",
+  "picks": 5,
+  "cands": 10,
+  "traps": 5,
+  "top": [
+   {
+    "t": "关于抹茶梦女的10086杯抹茶 以下评价",
+    "s": "抹茶控 9 品牌横评（武汉本土品牌煲珠公夺冠）：一点点粉感重、喜茶三倍厚抹翻车、沪上",
+    "trap": true
+   },
+   {
+    "t": "奶茶店咖啡如果都是这种水平的话也不是不行",
+    "s": "茶百道咖啡新品测评：羽衣甘蓝牛油果拿铁意外好喝，绵密又清新没有怪味（4星）；开心果云",
+    "trap": true
+   },
+   {
+    "t": "全冰有米美式 好喝！",
+    "s": "作者今年能列入前二的奶茶饮品：全冰有米美式，米香是灵魂，先喝原味再分别加抹茶和珍珠都",
+    "trap": false
+   }
+  ],
+  "covers": [
+   "assets/covers/2026-09-09_59d2d72650_s.jpg",
+   "assets/covers/2026-09-09_00e8463be0_s.jpg",
+   "assets/covers/2026-09-09_a30d94ff4d_s.jpg"
+  ],
+  "page": "地图-2026-09-09.html"
+ },
+ {
+  "day": "2026-09-08",
+  "week": "周二",
+  "topic": "🍽️ 餐厅探店",
+  "picks": 5,
+  "cands": 10,
+  "traps": 4,
+  "top": [
+   {
+    "t": "6刷山蕉！分享不踩雷点单攻略！！",
+    "s": "作者六刷不踩雷的云南傣家菜漂亮饭，tag 指向武昌万象城，落点万象城店：高德 4.6",
+    "trap": false
+   },
+   {
+    "t": "武汉漂亮饭餐厅|共计13家",
+    "s": "14 家漂亮饭逐店点评清单（各家定位在图集里，需点原文看图）：O'eat 牛排稳、清",
+    "trap": true
+   },
+   {
+    "t": "感觉是武汉目前top好吃的！！！！！",
+    "s": "武汉泰料顶流再返场：蒜蓉黑椒胡椒虾旋风蛋包饭、海鲜叻沙粉、泰北咖喱牛金面都好好吃，新",
+    "trap": false
+   }
+  ],
+  "covers": [
+   "assets/covers/2026-09-08_d34853fbed_s.jpg",
+   "assets/covers/2026-09-08_0e98f8b8a2_s.jpg",
+   "assets/covers/2026-09-08_09e2eeb667_s.jpg"
+  ],
+  "page": "地图-2026-09-08.html"
+ },
+ {
+  "day": "2026-09-07",
+  "week": "周一",
+  "topic": "🍲 家常馆子",
+  "picks": 5,
+  "cands": 10,
+  "traps": 1,
+  "top": [
+   {
+    "t": "来武汉一定要吃的十家店",
+    "s": "本地人视角的碳水逛吃清单（暴走3天整理）：夏氏砂锅（湖北菜砂锅）、肥肥虾庄（油焖大虾",
+    "trap": false
+   },
+   {
+    "t": "不夸张连炫六天！武汉最好吃小破店。。",
+    "s": "黎黄陂路小院里的家常菜小破店，作者连炫六天：龙虾扣肉饭、铁板牛肉煎蛋、番茄牛腩，还有",
+    "trap": false
+   },
+   {
+    "t": "武汉神级下饭馆子，真的不输笨萝卜啊🥹🥹",
+    "s": "湖南朋友安利的下饭湘菜馆，现炒锅气十足：\"我们点了一桌子没有踩雷\"，直接化身米饭仙人",
+    "trap": false
+   }
+  ],
+  "covers": [
+   "assets/covers/2026-09-07_af1f114f90_s.jpg",
+   "assets/covers/2026-09-07_e2e023dc39_s.jpg",
+   "assets/covers/2026-09-07_3ed4c82b04_s.jpg"
+  ],
+  "page": "地图-2026-09-07.html"
+ },
+ {
+  "day": "2026-09-06",
+  "week": "周日",
+  "topic": "🌸 综合精选",
+  "picks": 5,
+  "cands": 10,
+  "traps": 4,
+  "top": [
+   {
+    "t": "喜报！武汉最正宗的云南菜已被我们发现",
+    "s": "点评上刷到的云南小馆，店面很小藏在巷子里，老板是地道云南人；酸汤猪脚、小锅饵丝、炸洋",
+    "trap": true
+   },
+   {
+    "t": "感谢谢霆锋🙏确实是武汉极品。。、。。",
+    "s": "烧烤店安利帖：慕名而来真没失望，'香晕我了、恨不得天天吃'，标题致谢谢霆锋（疑与名人",
+    "trap": false
+   },
+   {
+    "t": "江汉路一些真正好吃的小破店(非网红",
+    "s": "江汉路巷子里的冒菜小破店，作者已三刷，'真的和其他店不一样'：锅底现炒、红油很香，走",
+    "trap": false
+   }
+  ],
+  "covers": [
+   "assets/covers/2026-09-06_42f3153e40_s.jpg",
+   "assets/covers/2026-09-06_6ae526f8a9_s.jpg",
+   "assets/covers/2026-09-06_5f4c10dbd4_s.jpg"
+  ],
+  "page": "地图-2026-09-06.html"
+ },
+ {
+  "day": "2026-09-05",
+  "week": "周六",
+  "topic": "🍢 街头小吃",
+  "picks": 5,
+  "cands": 10,
+  "traps": 3,
+  "top": [
+   {
+    "t": "武汉著名炸炸。。。",
+    "s": "舍不得公开的炸炸小破店，鸡柳薯条就是小时候的味道，还要配稀溜溜的番茄酱，一大盘30元",
+    "trap": false
+   },
+   {
+    "t": "去江夏爬青龙山，途中偶遇的苍蝇小馆",
+    "s": "去江夏爬青龙山途中偶遇的无名苍蝇小馆，外表不起眼却意外能打：黄骨鱼处理得一点腥味没有",
+    "trap": true
+   },
+   {
+    "t": "武汉9家断层好吃的馆子！",
+    "s": "汉口9家适配各类饭局的馆子清单：岳二郎田鸡（苗栗路）、行运大排档、九牛一锅（台北路）",
+    "trap": false
+   }
+  ],
+  "covers": [
+   "assets/covers/2026-09-05_8789891c86_s.jpg",
+   "assets/covers/2026-09-05_cc8e7c5be6_s.jpg",
+   "assets/covers/2026-09-05_792f958800_s.jpg"
+  ],
+  "page": "地图-2026-09-05.html"
+ },
+ {
+  "day": "2026-09-04",
+  "week": "周五",
+  "topic": "🆕 新店开业",
+  "picks": 5,
+  "cands": 10,
+  "traps": 1,
+  "top": [
+   {
+    "t": "武汉低调又小有品位的一家",
+    "s": "暗调氛围感餐厅，进门有种不在国内的感觉，因美食节目《一饭封神》种草。创意菜思路：生牛",
+    "trap": false
+   },
+   {
+    "t": "经开永旺新开的烤肉店两大两小人均90吃到撑",
+    "s": "经开永旺A馆4楼新开的轻烧烤肉：肉按克称重、每种少称一点多吃几样，小食无限续，两大两",
+    "trap": false
+   },
+   {
+    "t": "武汉！总要和朋友去一次的小酒馆。。。",
+    "s": "逛天地随手选的台州系小酒馆（即高德收录的八佰伴·台州bistro），朋友小聚体验不错",
+    "trap": false
+   }
+  ],
+  "covers": [
+   "assets/covers/2026-09-04_25f75ebfa0_s.jpg",
+   "assets/covers/2026-09-04_e5c16cd08d_s.jpg",
+   "assets/covers/2026-09-04_404a7398bf_s.jpg"
+  ],
+  "page": "地图-2026-09-04.html"
+ },
+ {
+  "day": "2026-09-03",
+  "week": "周四",
+  "topic": "",
+  "picks": 5,
+  "cands": 10,
+  "traps": 4,
+  "top": [
+   {
+    "t": "武汉真正本地人才知道的巷子里美食",
+    "s": "本地人视角的九大片区美食清单：大成路、粮道街、江汉路/循礼门、山海关路、兰陵路、光谷",
+    "trap": false
+   },
+   {
+    "t": "（个人认为）武汉旅游必吃的三天18顿！！！",
+    "s": "武汉土著的三天 18 顿吃法合集，过早、小吃、宵夜、烧烤、本土饮品、湖北菜全覆盖，具",
+    "trap": false
+   },
+   {
+    "t": "在武汉算很全面的荆州菜，覆盖荆州全域县市",
+    "s": "水果湖的荆州菜馆，覆盖监利、松滋、荆沙甚至天潜沔菜系，怒点 11 道。整体在武汉算很",
+    "trap": true
+   }
+  ],
+  "covers": [
+   "assets/covers/2026-09-03_fafe375266_s.jpg",
+   "assets/covers/2026-09-03_f871f5be87_s.jpg",
+   "assets/covers/2026-09-03_49a868af90_s.jpg"
+  ],
+  "page": "地图-2026-09-03.html"
+ },
+ {
+  "day": "2026-09-02",
+  "week": "周三",
+  "topic": "",
+  "picks": 5,
+  "cands": 10,
+  "traps": 7,
+  "top": [
+   {
+    "t": "最近在武汉吃到的一些美味小店（18家）",
+    "s": "一口气整理 18 家最近吃到的心动小店，店名与门牌都在图片里，摘要无法转述——需点原",
+    "trap": false
+   },
+   {
+    "t": "第一次在武汉过早把大成路吃遍要多少钱呢",
+    "s": "酒店定在大成路的过早全记录：三鲜豆皮 7 元夯到连吃三天，丽华早点（雷军同款）热干面",
+    "trap": true
+   },
+   {
+    "t": "目前武汉黄鹤楼top好吃的！",
+    "s": "逛完黄鹤楼直奔复兴路地铁口的苍蝇小馆，开了 13 年的现点现炒家常湖北菜，饭点不到已",
+    "trap": true
+   }
+  ],
+  "covers": [
+   "assets/covers/2026-09-02_e647d59105_s.jpg",
+   "assets/covers/2026-09-02_0188ddc9ce_s.jpg",
+   "assets/covers/2026-09-02_98da118f50_s.jpg"
+  ],
+  "page": "地图-2026-09-02.html"
+ },
+ {
+  "day": "2026-09-01",
+  "week": "周二",
+  "topic": "",
+  "picks": 5,
+  "cands": 10,
+  "traps": 1,
+  "top": [
+   {
+    "t": "武汉已回，只有两家店想下次再去吃，其他口",
+    "s": "一周游冷水总结：只有两家想再去——一家苍蝇馆子的鱼籽豆腐/干煸藕丝/清炒苕尖（隔壁桌",
+    "trap": true
+   },
+   {
+    "t": "武汉韩餐｜天地附近｜玫瑰辣奶油芝士烩饭",
+    "s": "武汉天地旁的韩食酒馆 Haha Korean bistro，午市单人餐：炸鱿鱼骨 +",
+    "trap": false
+   },
+   {
+    "t": "武汉🥢分享苗栗路我很爱的一家小店",
+    "s": "苗栗路上一家「梦核」感小馆（原文未写店名）：风扇呜呜转、像回忆里的味道，taco 搭",
+    "trap": false
+   }
+  ],
+  "covers": [
+   "assets/covers/2026-09-01_146fdf0c15_s.jpg",
+   "assets/covers/2026-09-01_abfb27394a_s.jpg",
+   "assets/covers/2026-09-01_149d1c8e2d_s.jpg"
+  ],
+  "page": "地图-2026-09-01.html"
+ },
+ {
+  "day": "2026-08-31",
+  "week": "周一",
+  "topic": "",
+  "picks": 5,
+  "cands": 10,
+  "traps": 1,
+  "top": [
+   {
+    "t": "武汉已回，只有两家店想下次再去吃，其他口",
+    "s": "一周游冷水总结：只有两家想再去——一家苍蝇馆子的鱼籽豆腐/干煸藕丝/清炒苕尖（隔壁桌",
+    "trap": true
+   },
+   {
+    "t": "武汉黄鹤楼！！！吃了不下十次的！！！！",
+    "s": "长江大桥下、作者奶奶经常吃的湖北菜馆，老师傅做老式武汉菜，原文未写店名。去黄鹤楼/长",
+    "trap": false
+   },
+   {
+    "t": "吃美了🥢",
+    "s": "半川石 Local Flavor（扶轮路18号嘉佰汇1楼），川式 omakase·中",
+    "trap": false
+   }
+  ],
+  "covers": [
+   "assets/covers/2026-08-31_146fdf0c15_s.jpg",
+   "assets/covers/2026-08-31_53f4b36f95_s.jpg",
+   "assets/covers/2026-08-31_0df414cdcf_s.jpg"
+  ],
+  "page": "地图-2026-08-31.html"
+ }
+];
+const $=s=>document.querySelector(s);
+$("#ndays").textContent=ARCHIVE.length;
+for(const a of ARCHIVE){
+  const card=document.getElementById("d"+a.day);
+  if(!card) continue;
+  card.href=a.page;
+  const top=card.querySelector(".day-top");
+  a.top.forEach((t,i)=>{
+    const el=document.createElement("div");
+    el.className="t";
+    el.innerHTML='<span class="no">'+(i+1)+'.</span>'+
+      (t.trap?'<span class="warn">⚠️踩雷</span>':'')+
+      '<span>'+t.t+'</span><span class="s">'+t.s+'…</span>';
+    top.appendChild(el);
+  });
+  const cov=card.querySelector(".day-covers");
+  (a.covers||[]).forEach(c=>{
+    const img=document.createElement("img");
+    img.src=c; img.loading="lazy"; img.alt="";
+    cov.appendChild(img);
+  });
+}
+</script>
+</body>
+</html>
