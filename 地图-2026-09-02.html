@@ -458,5 +458,60 @@ function render(){
 }
 render();
 </script>
+<style id="lockgate-css">.lg-locked{position:relative}
+.lg-locked>*:not(.lg-veil){filter:blur(9px);user-select:none;pointer-events:none}
+.lg-veil{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;background:rgba(255,247,237,.55);border-radius:inherit;backdrop-filter:blur(2px);cursor:default}
+.lg-box{background:#fff;border:1px solid #FDE68A;border-radius:16px;box-shadow:0 10px 30px rgba(234,88,12,.18);padding:22px 26px;text-align:center;max-width:86%}
+.lg-ico{font-size:30px;line-height:1}
+.lg-t{font-weight:800;font-size:15.5px;color:#7C2D12;margin-top:8px}
+.lg-s{font-size:12px;color:#57534E;margin-top:4px}
+.lg-row{display:flex;gap:8px;margin-top:13px;justify-content:center}
+.lg-row input{width:112px;border:1px solid #E7E5E4;border-radius:10px;padding:8px 10px;font-size:14px;text-align:center;outline:none;color:#0F172A}
+.lg-row input:focus{border-color:#EA580C;box-shadow:0 0 0 3px rgba(234,88,12,.12)}
+.lg-row button{border:0;border-radius:10px;background:#EA580C;color:#fff;font-weight:700;padding:8px 16px;font-size:14px;cursor:pointer}
+.lg-row button:hover{background:#C2410C}
+.lg-err{color:#B91C1C;font-size:11.5px;margin-top:8px;min-height:15px}
+body.lg-on .leaflet-popup-content-wrapper .leaflet-popup-content{filter:blur(6px);pointer-events:none}</style>
+<script id="lockgate-js">
+/* 内容闸门（inject_lock.py 注入，勿手改）：前 2 张免费，其余密码解锁 */
+(function(){
+  var CODE='0723', FREE=2, KEY='fd_lock_ok';
+  function ok(){try{return localStorage.getItem(KEY)==='1'}catch(e){return false}}
+  function targets(){
+    var cb=document.getElementById('cards');
+    return cb?[].slice.call(cb.querySelectorAll('.card'))
+             :[].slice.call(document.querySelectorAll('.wrap a.day'));
+  }
+  function apply(){
+    var un=ok();
+    document.body.classList.toggle('lg-on',!un);
+    targets().forEach(function(c,i){
+      var need=!un&&i>=FREE;
+      c.classList.toggle('lg-locked',need);
+      var v=c.querySelector('.lg-veil');
+      if(need&&!v){
+        v=document.createElement('div');v.className='lg-veil';
+        v.innerHTML='<div class="lg-box"><div class="lg-ico">🔒</div>'+
+          '<div class="lg-t">需要密码解锁精彩内容</div>'+
+          '<div class="lg-s">密码请联系站长</div>'+
+          '<div class="lg-row"><input type="password" inputmode="numeric" maxlength="8" placeholder="输入密码" aria-label="解锁密码"><button type="button">解锁</button></div>'+
+          '<div class="lg-err"></div></div>';
+        c.appendChild(v);
+        var inp=v.querySelector('input'),btn=v.querySelector('button'),err=v.querySelector('.lg-err');
+        function go(ev){
+          ev.stopPropagation();ev.preventDefault();
+          if(inp.value===CODE){try{localStorage.setItem(KEY,'1')}catch(e){}apply()}
+          else{err.textContent='密码不对，请联系站长获取';inp.value='';inp.focus()}
+        }
+        btn.onclick=go;
+        inp.onkeydown=function(e){if(e.key==='Enter')go(e)};
+        v.onclick=function(e){e.stopPropagation()};
+      }else if(!need&&v){v.remove()}
+    });
+  }
+  if(typeof window.render==='function'){var _r=window.render;window.render=function(){_r();apply()}}
+  apply();
+})();
+</script>
 </body>
 </html>
