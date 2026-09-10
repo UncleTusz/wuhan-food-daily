@@ -480,7 +480,7 @@ body.lg-on .leaflet-popup-content-wrapper .leaflet-popup-content{filter:blur(6px
 <script id="lockgate-js">
 /* 内容闸门（inject_lock.py 注入，勿手改）：前 2 张免费，其后插入 1 个全局解锁框，其余纯模糊 */
 (function(){
-  var CODE='0723', FREE=2, KEY='fd_lock_ok';
+  var CODES=['0723','0731'], FREE=2, KEY='fd_lock_ok';
   function ok(){try{return localStorage.getItem(KEY)==='1'}catch(e){return false}}
   function targets(){
     var cb=document.getElementById('cards');
@@ -509,7 +509,7 @@ body.lg-on .leaflet-popup-content-wrapper .leaflet-popup-content{filter:blur(6px
     var inp=gate.querySelector('input'),btn=gate.querySelector('button'),err=gate.querySelector('.lg-err');
     function go(ev){
       ev.preventDefault();
-      if(inp.value===CODE){try{localStorage.setItem(KEY,'1')}catch(e){}apply()}
+      if(CODES.indexOf(inp.value)>=0){try{localStorage.setItem(KEY,'1')}catch(e){}apply()}
       else{err.textContent='密码不对，请联系站长获取';inp.value='';inp.focus()}
     }
     btn.onclick=go;
